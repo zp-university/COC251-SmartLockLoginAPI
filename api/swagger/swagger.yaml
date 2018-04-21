@@ -97,10 +97,10 @@ definitions:
       email:
         type: string
         example: "abc123@gmail.com"
-      firstName:
+      firstname:
         type: string
         example: "James"
-      lastName:
+      lastname:
         type: string
         example: "Smith"
   Token:

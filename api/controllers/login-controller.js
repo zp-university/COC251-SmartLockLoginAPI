@@ -41,8 +41,8 @@ exports.signupPost = function (args, res, next) {
         username: args.body.username,
         password: args.body.password,
         email: args.body.email,
-        firstName: args.body.firstName,
-        lastName: args.body.lastName
+        firstname: args.body.firstname,
+        lastname: args.body.lastname
     });
 
     //Check if
