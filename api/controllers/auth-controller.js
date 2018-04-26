@@ -21,7 +21,7 @@ exports.loginPost = function (args, res, next) {
             res.writeHead(403, {"Content-Type": "application/json"});
             return res.end(JSON.stringify(response));
         } else {
-            var tokenString = auth.issueToken(task.id, function (err, tokenString) {
+            var tokenString = auth.issueToken(task.id, true, function (err, tokenString) {
                 if(err || !tokenString) {
                     var response = {message: "Error: Internal server error"};
                     res.writeHead(500, {"Content-Type": "application/json"});
@@ -63,7 +63,7 @@ exports.signupPost = function (args, res, next) {
                     res.writeHead(500, {"Content-Type": "application/json"});
                     return res.end(JSON.stringify(response));
                 } else {
-                    auth.issueToken(task.id, function (err, tokenString) {
+                    auth.issueToken(task.id, true, function (err, tokenString) {
                         if(err || !tokenString) {
                             var response = {message: "Error: Internal server error"};
                             res.writeHead(500, {"Content-Type": "application/json"});
@@ -93,7 +93,7 @@ exports.deviceRegister = function (args, res, next) {
             res.writeHead(500, {"Content-Type": "application/json"});
             return res.end(JSON.stringify(response));
         } else {
-            auth.issueToken(task.id, function (err, tokenString) {
+            auth.issueToken(task.id, false, function (err, tokenString) {
                 if (err || !tokenString) {
                     var response = {message: "Error: Internal server error"};
                     res.writeHead(500, {"Content-Type": "application/json"});
