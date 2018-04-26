@@ -2,7 +2,8 @@
 
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var Token = mongoose.model('Token');
+var UserToken = mongoose.model('UserToken');
+var DeviceToken = mongoose.model('DeviceToken');
 
 var jwt = require("jsonwebtoken");
 var sharedSecret = "le7Z4GUVfq1e19E9r4wp27sGFZFgvm3tNSn2ZTeiYin9AURlIMLAOmwJNznYsB0qtr6VnzcqSuWnRv4uTOjpAD6gPuullpo1aED4";
@@ -64,17 +65,18 @@ exports.verifyToken = function (req, authOrSecDef, token, callback) {
     }
 };
 
-exports.issueToken = function (userId, callback) {
+exports.issueToken = function (id, user, callback) {
 
     //Save token here and store in database then retrieve token ID
-    var dbToken = new Token({user: userId});
+    var dbToken = user ? new UserToken({user: id}) : DeviceToken({device: id});
     dbToken.save(function (err, task) {
         if (!err && task.id) {
             //Create signed JWT using the created ID from the database
             callback(err, jwt.sign(
                 {
                     tid: task.id,
-                    iss: issuer
+                    iss: issuer,
+                    user: user
                 },
                 sharedSecret
             ));

@@ -31,7 +31,7 @@ produces:
   - application/json
 paths:
   /login:
-    x-swagger-router-controller: login-controller
+    x-swagger-router-controller: auth-controller
     post:
       tags:
         - auth
@@ -52,9 +52,8 @@ paths:
           description: "Access Denied"
           schema:
             $ref: "#/definitions/Error"
-
   /signup:
-    x-swagger-router-controller: login-controller
+    x-swagger-router-controller: auth-controller
     post:
       tags:
         - auth
@@ -75,6 +74,24 @@ paths:
           description: "User Details not Accepted"
           schema:
             $ref: "#/definitions/Error"
+  /device/register:
+    x-swagger-router-controller: auth-controller
+    post:
+      tags:
+        - auth
+      operationId: deviceRegister
+      description: "Core Device Registration"
+      parameters:
+        - name: device
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Device"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Token"
 definitions:
   Authentication:
     type: object
@@ -108,6 +125,15 @@ definitions:
     properties:
       token:
         type: string
+  Device:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "SMARTLOCK-CORE-ABC123"
+      uuid:
+        type: string
+        example: "1a08a291-9ad2-4bc7-b471-426a543f2ce2"
   Error:
     type: object
     properties:

@@ -4,6 +4,7 @@ var auth = require("../helpers/auth");
 
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
+var Device = mongoose.model('Device');
 
 exports.loginPost = function (args, res, next) {
     var username = args.body.username;
@@ -62,7 +63,7 @@ exports.signupPost = function (args, res, next) {
                     res.writeHead(500, {"Content-Type": "application/json"});
                     return res.end(JSON.stringify(response));
                 } else {
-                    var tokenString = auth.issueToken(task.id, function (err, tokenString) {
+                    auth.issueToken(task.id, function (err, tokenString) {
                         if(err || !tokenString) {
                             var response = {message: "Error: Internal server error"};
                             res.writeHead(500, {"Content-Type": "application/json"});
@@ -76,5 +77,33 @@ exports.signupPost = function (args, res, next) {
                 }
             });
         }
-    })
+    });
+};
+
+exports.deviceRegister = function (args, res, next) {
+
+    var device = new Device({
+        name: args.body.name,
+        uuid: args.body.uuid
+    });
+
+    device.save(function(err, task) {
+        if(err) {
+            var response = {message: "Error: Internal server error"};
+            res.writeHead(500, {"Content-Type": "application/json"});
+            return res.end(JSON.stringify(response));
+        } else {
+            auth.issueToken(task.id, function (err, tokenString) {
+                if (err || !tokenString) {
+                    var response = {message: "Error: Internal server error"};
+                    res.writeHead(500, {"Content-Type": "application/json"});
+                    return res.end(JSON.stringify(response));
+                } else {
+                    var response = {token: tokenString};
+                    res.writeHead(200, {"Content-Type": "application/json"});
+                    return res.end(JSON.stringify(response));
+                }
+            });
+        }
+    });
 };

@@ -16,12 +16,25 @@
         lastName        : {type : String}
     });
 
-    var token = new Schema({
-        user                : {type : Schema.Types.ObjectId, ref: 'User'}
+    var userToken = new Schema({
+        user            : {type : Schema.Types.ObjectId, ref: 'User'}
     });
 
-    module.exports.User    = mongoose.model('User', user);
-    module.exports.Token   = mongoose.model('Token', token);
+    var device = new Schema({
+        name            : {type : String},
+        uuid            : {type : String},
+        created         : {type : Date, default: Date.now},
+        user            : {type : Schema.Types.ObjectId, ref: 'User'}
+    });
+
+    var deviceToken = new Schema({
+        device          : {type : Schema.Types.ObjectId, ref: 'Device'}
+    });
+
+    module.exports.User         = mongoose.model('User', user);
+    module.exports.UserToken    = mongoose.model('UserToken', userToken);
+    module.exports.Device       = mongoose.model('Device', device);
+    module.exports.DeviceToken  = mongoose.model('DeviceToken', deviceToken);
 
     module.exports.getId = function (id) {
         "use strict";
