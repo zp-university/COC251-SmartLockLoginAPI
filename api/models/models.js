@@ -20,11 +20,16 @@
         user            : {type : Schema.Types.ObjectId, ref: 'User'}
     });
 
+    var userDevice = new Schema({
+        user            : {type : Schema.Types.ObjectId, ref: 'User'},
+        device          : {type : Schema.Types.ObjectId, ref: 'Device'}
+    });
+
     var device = new Schema({
         name            : {type : String},
         uuid            : {type : String},
         created         : {type : Date, default: Date.now},
-        user            : {type : Schema.Types.ObjectId, ref: 'User'}
+        locked          : {type : Boolean, default: true}
     });
 
     var deviceToken = new Schema({
@@ -33,6 +38,7 @@
 
     module.exports.User         = mongoose.model('User', user);
     module.exports.UserToken    = mongoose.model('UserToken', userToken);
+    module.exports.UserDevice   = mongoose.model('UserDevice', userDevice);
     module.exports.Device       = mongoose.model('Device', device);
     module.exports.DeviceToken  = mongoose.model('DeviceToken', deviceToken);
 

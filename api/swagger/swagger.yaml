@@ -1,10 +1,9 @@
-# Login API Courtesy of https://github.com/miguelduarte42/swagger-jwt-example
 swagger: "2.0"
 info:
-  version: "1.0.0"
-  title: Swagger JWT Example
+  version: "0.0.1"
+  title: "SmartLockServerAPI"
 host: smartlockapp.zackpollard.pro
-basePath: /api/v1/auth
+basePath: /api/v1
 schemes:
   - http
   - https
@@ -30,7 +29,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /login:
+  /auth/login:
     x-swagger-router-controller: auth-controller
     post:
       tags:
@@ -52,7 +51,7 @@ paths:
           description: "Access Denied"
           schema:
             $ref: "#/definitions/Error"
-  /signup:
+  /auth/signup:
     x-swagger-router-controller: auth-controller
     post:
       tags:
@@ -75,10 +74,10 @@ paths:
           schema:
             $ref: "#/definitions/Error"
   /device/register:
-    x-swagger-router-controller: auth-controller
+    x-swagger-router-controller: device-controller
     post:
       tags:
-        - auth
+        - device
       operationId: deviceRegister
       description: "Core Device Registration"
       parameters:
@@ -92,6 +91,72 @@ paths:
           description: "Success"
           schema:
             $ref: "#/definitions/Token"
+  /device:
+    x-swagger-router-controller: device-controller
+    get:
+      tags:
+        - device
+      operationId: deviceGetDevice
+      description: "Get Device Status for Self"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Device"
+  /user/device/add:
+    x-swagger-router-controller: user-controller
+    post:
+      tags:
+        - user
+      operationId: userDeviceAdd
+      description: "Add device to users account"
+      security:
+        - Bearer: []
+      parameters:
+        - name: device
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UUID"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Device"
+  /user/device/lock:
+    x-swagger-router-controller: user-controller
+    post:
+      tags:
+        - user
+      operationId: userDeviceLock
+      description: "Lock or Unlock the device bound to the users account"
+      security:
+        - Bearer: []
+      parameters:
+        - name: lockstatus
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/LockStatus"
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Device"
+  /user/device:
+    x-swagger-router-controller: user-controller
+    get:
+      tags:
+        - user
+      operationId: userGetDevice
+      description: "Lock or Unlock the device bound to the users account"
+      security:
+        - Bearer: []
+      responses:
+        "200":
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Device"
 definitions:
   Authentication:
     type: object
@@ -131,6 +196,18 @@ definitions:
       name:
         type: string
         example: "SMARTLOCK-CORE-ABC123"
+      uuid:
+        type: string
+        example: "1a08a291-9ad2-4bc7-b471-426a543f2ce2"
+  LockStatus:
+    type: object
+    properties:
+      locked:
+        type: boolean
+        example: "true"
+  UUID:
+    type: object
+    properties:
       uuid:
         type: string
         example: "1a08a291-9ad2-4bc7-b471-426a543f2ce2"

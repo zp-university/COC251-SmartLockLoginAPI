@@ -44,7 +44,7 @@ exports.verifyToken = function (req, authOrSecDef, token, callback) {
                 // token here if necessary, such as checking if
                 // the username belongs to an active user
 
-                if (roleMatch && issuerMatch) {
+                if (issuerMatch) {
                     //add the token to the request so that we
                     //can access it in the endpoint code if necessary
                     req.auth = decodedToken;
@@ -78,7 +78,7 @@ exports.issueToken = function (id, user, callback) {
                     iss: issuer,
                     user: user
                 },
-                sharedSecret
+            sharedSecret
             ));
             return;
         }

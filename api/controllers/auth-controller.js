@@ -1,33 +1,32 @@
 'use strict'
 
-var auth = require("../helpers/auth");
+const auth = require("../helpers/auth");
 
-var mongoose = require('mongoose');
-var User = mongoose.model('User');
-var Device = mongoose.model('Device');
+const mongoose = require('mongoose');
+const User = mongoose.model('User');
 
 exports.loginPost = function (args, res, next) {
-    var username = args.body.username;
-    var password = args.body.password;
+    let username = args.body.username;
+    let password = args.body.password;
 
     User.findOne({username: username}, function (err, task) {
         //Return incorrect credentials if user doesn't exist or password is incorrect
-        if (err) {
-            var response = {message: "Error: Internal server error"};
+        if (err || !task) {
+            let response = {message: "Error: Internal server error"};
             res.writeHead(500, {"Content-Type": "application/json"});
             return res.end(JSON.stringify(response));
         } else if (task == null || password !== task.password) {
-            var response = {message: "Error: Credentials incorrect"};
+            let response = {message: "Error: Credentials incorrect"};
             res.writeHead(403, {"Content-Type": "application/json"});
             return res.end(JSON.stringify(response));
         } else {
-            var tokenString = auth.issueToken(task.id, true, function (err, tokenString) {
+            auth.issueToken(task.id, true, function (err, tokenString) {
                 if(err || !tokenString) {
-                    var response = {message: "Error: Internal server error"};
+                    let response = {message: "Error: Internal server error"};
                     res.writeHead(500, {"Content-Type": "application/json"});
                     return res.end(JSON.stringify(response));
                 } else {
-                    var response = {token: tokenString};
+                    let response = {token: tokenString};
                     res.writeHead(200, {"Content-Type": "application/json"});
                     return res.end(JSON.stringify(response));
                 }
@@ -38,7 +37,7 @@ exports.loginPost = function (args, res, next) {
 
 exports.signupPost = function (args, res, next) {
 
-    var user = new User({
+    let user = new User({
         username: args.body.username,
         password: args.body.password,
         email: args.body.email,
@@ -49,59 +48,31 @@ exports.signupPost = function (args, res, next) {
     //Check if
     User.findOne({$or: [{username: user.username}, {email: user.email}]}, function(err, task) {
         if (err) {
-            var response = {message: "Error: Internal server error"};
+            let response = {message: "Error: Internal server error"};
             res.writeHead(500, {"Content-Type": "application/json"});
             return res.end(JSON.stringify(response));
         } else if (task) {
-            var response = {message: "Error: Email or Username already registered by another user"};
+            let response = {message: "Error: Email or Username already registered by another user"};
             res.writeHead(409, {"Content-Type": "application/json"});
             return res.end(JSON.stringify(response));
         } else {
             user.save(function(err, task) {
                 if(err) {
-                    var response = {message: "Error: Internal server error"};
+                    let response = {message: "Error: Internal server error"};
                     res.writeHead(500, {"Content-Type": "application/json"});
                     return res.end(JSON.stringify(response));
                 } else {
                     auth.issueToken(task.id, true, function (err, tokenString) {
                         if(err || !tokenString) {
-                            var response = {message: "Error: Internal server error"};
+                            let response = {message: "Error: Internal server error"};
                             res.writeHead(500, {"Content-Type": "application/json"});
                             return res.end(JSON.stringify(response));
                         } else {
-                            var response = {token: tokenString};
+                            let response = {token: tokenString};
                             res.writeHead(200, {"Content-Type": "application/json"});
                             return res.end(JSON.stringify(response));
                         }
                     });
-                }
-            });
-        }
-    });
-};
-
-exports.deviceRegister = function (args, res, next) {
-
-    var device = new Device({
-        name: args.body.name,
-        uuid: args.body.uuid
-    });
-
-    device.save(function(err, task) {
-        if(err) {
-            var response = {message: "Error: Internal server error"};
-            res.writeHead(500, {"Content-Type": "application/json"});
-            return res.end(JSON.stringify(response));
-        } else {
-            auth.issueToken(task.id, false, function (err, tokenString) {
-                if (err || !tokenString) {
-                    var response = {message: "Error: Internal server error"};
-                    res.writeHead(500, {"Content-Type": "application/json"});
-                    return res.end(JSON.stringify(response));
-                } else {
-                    var response = {token: tokenString};
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    return res.end(JSON.stringify(response));
                 }
             });
         }
