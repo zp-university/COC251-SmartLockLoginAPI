@@ -5,7 +5,6 @@ info:
 host: smartlockapp.zackpollard.pro
 basePath: /api/v1
 schemes:
-  - http
   - https
 securityDefinitions:
   Bearer:
@@ -98,6 +97,8 @@ paths:
         - device
       operationId: deviceGetDevice
       description: "Get Device Status for Self"
+      security:
+        - Bearer: []
       responses:
         "200":
           description: "Success"
