@@ -9,7 +9,7 @@
     "swagger-tools": "0.10.1",
     "validator": "7.0.0",
     "yamljs": "0.2.9",
-    "mongoose": "^4.13.0"
+    "mongoose": "^5.7.5"
   },
   "engines": {
     "node": "7.7.0"
